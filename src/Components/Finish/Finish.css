@@ -1,0 +1,20 @@
+.result-text {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #8c5f3e;
+}
+
+.wrapper {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    flex-flow: wrap;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+    background-image: url('../../assets/gameBoard.png');
+    background-size: cover;
+    padding: 20px;
+}

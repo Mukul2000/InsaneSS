@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 import Cell from './Cell/Cell';
 import { evaluate, is_moves_left } from '../../utils/gameUtils';
 import { findBestMove } from '../../utils/bot';
+import Finish from "../Finish/Finish";
 
 function GameBoard({ player }) {
-    // const [board, setBoard] = useState(Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => 0)));
+    const [winner, setWinner] = useState("None");
     const [board, setBoard] = useState([
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0]
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
     ]);
     const [turn, setTurn] = useState(false);
     const navigate = useNavigate();
@@ -20,11 +21,11 @@ function GameBoard({ player }) {
         const score = evaluate(board);
         if (score === 10 || score === -10) {
             // give player 1 player 2 win
-            console.log("Someone wins");
-            navigate('/finish');
+            if (score === 10) setWinner("You win");
+            else setWinner("Player 2 wins");
         }
         else {
-            if (!is_moves_left(board)) navigate('/finish'); // draw
+            if (!is_moves_left(board)) setWinner("It's a draw");
         }
     }
 
@@ -51,7 +52,7 @@ function GameBoard({ player }) {
             newBoard[move[0]][move[1]] = 2;
         }
         else {
-            if(turn) newBoard[x][y] = 2;
+            if (turn) newBoard[x][y] = 2;
             else newBoard[x][y] = 1;
             setTurn(!turn);
         }
@@ -60,14 +61,17 @@ function GameBoard({ player }) {
 
     }
 
-    return <div className='board-wrapper'>
-        {board.map((item, x) => {
-            return <div className='board-row' key={x} > {item.map((cell, y) => {
-                return <Cell key={y} cell={cell} handleCellClick={handleCellClick} x={x} y={y} />
+    if (winner === "None") {
+        return <div className='board-wrapper'>
+            {board.map((item, x) => {
+                return <div className='board-row' key={x} > {item.map((cell, y) => {
+                    return <Cell key={y} cell={cell} handleCellClick={handleCellClick} x={x} y={y} />
+                })}
+                </div>
             })}
-            </div>
-        })}
-    </div>
+        </div>
+    }
+    else return <Finish text = {winner} mode = {player}/>
 }
 
 export default GameBoard;
