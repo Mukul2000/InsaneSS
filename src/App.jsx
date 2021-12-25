@@ -10,8 +10,8 @@ function App() {
   return <BrowserRouter>
     <Routes>
       <Route path='/play/rooms/join' element={<JoinGame />} />
-      <Route path='/play/rooms/:room_code' element={<GameBoard player='human' />} />
-      <Route path='/play/ai' element={<GameBoard player='ai' />} />
+      <Route path='/play/rooms/:room_code' element={<GameBoard mode='multiplayer' />} />
+      <Route path='/play/ai' element={<GameBoard mode='ai' />} />
       <Route path='/play' element={<CreateGame />} />
       <Route path='/' element={<Play />} />
     </Routes>
