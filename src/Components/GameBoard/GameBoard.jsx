@@ -6,7 +6,6 @@ import { findBestMove } from '../../utils/bot';
 import Finish from "../Finish/Finish";
 import { connect, GameStatus, joinGameRoom, onGameStart, onGameUpdate, updateGame } from '../../utils/sockets';
 import { useParams } from "react-router-dom";
-import Waiting from '../Waiting/Waiting';
 
 function GameBoard({ mode }) {
     const [isInRoom, setInRoom] = useState(false);
@@ -79,10 +78,10 @@ function GameBoard({ mode }) {
             // give player 1 player 2 win
             if (score === 10 && playerSymbol === 1 || score === -10 && playerSymbol === 2) {
                 setWinner("You won the game.");
-                if(mode === 'multiplayer') socket.emit('game_status');
+                if (mode === 'multiplayer') socket.emit('game_status');
             }
             else
-                setWinner("You lost the game."); 
+                setWinner("You lost the game.");
         }
         else {
             if (!is_moves_left(board)) setWinner("It's a draw");
@@ -125,8 +124,10 @@ function GameBoard({ mode }) {
 
     if (isGameStarted || mode === 'ai') {
         if (winner === "None") {
-            { isJoining && <h3> Joining the room... </h3> }
             return <div className='board-wrapper'>
+                {turn && <div className='turn-text'> Your turn </div>}
+                {!turn && <div className='turn-text'>Opponent's turn</div>}
+
                 {board.map((item, x) => {
                     return <div className='board-row' key={x} > {item.map((cell, y) => {
                         return <Cell key={y} cell={cell} handleCellClick={handleCellClick} x={x} y={y} />
@@ -138,7 +139,12 @@ function GameBoard({ mode }) {
         else return <Finish text={winner} mode={mode} />
     }
     else {
-        return <Waiting code={room_code} />
+        return <div className='board-wrapper'>
+            <h1> Waiting for other player to join </h1>
+
+            <h2>Room Code </h2>
+            <h2> <b> {room_code} </b> </h2>
+        </div>
     }
 }
 
