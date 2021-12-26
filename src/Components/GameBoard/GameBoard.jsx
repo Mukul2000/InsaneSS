@@ -4,7 +4,7 @@ import Cell from './Cell/Cell';
 import { evaluate, is_moves_left } from '../../utils/gameUtils';
 import { findBestMove } from '../../utils/bot';
 import Finish from "../Finish/Finish";
-import { connect, joinGameRoom, onGameStart, onGameUpdate, updateGame } from '../../utils/sockets';
+import { connect, GameStatus, joinGameRoom, onGameStart, onGameUpdate, updateGame } from '../../utils/sockets';
 import { useParams } from "react-router-dom";
 import Waiting from '../Waiting/Waiting';
 
@@ -40,13 +40,7 @@ function GameBoard({ mode }) {
         if (joined) setInRoom(true);
         setJoining(false);
 
-        // set up listener for move updates
-        onGameUpdate(socket, (board) => {
-            setBoard(board);
-            setTurn(true);
-        });
-
-        // set up listener for game start
+        // set up listener for game start, when two players are in the room
         onGameStart(socket, (options) => {
             setGameStarted(true);
             setSymbol(options.symbol);
@@ -54,6 +48,20 @@ function GameBoard({ mode }) {
                 setTurn(true);
             }
             else setTurn(false);
+        });
+
+
+        // set up listener for move updates
+        onGameUpdate(socket, (board) => {
+            setBoard(board);
+            setTurn(true);
+        });
+
+        // set up listener in case a player wins
+        GameStatus(socket, (result) => {
+            console.log(result);
+            if (result === false) setWinner("You lost the game");
+            else setWinner("You won the game");
         });
 
     }
@@ -69,8 +77,12 @@ function GameBoard({ mode }) {
         const score = evaluate(board);
         if (score === 10 || score === -10) {
             // give player 1 player 2 win
-            if (score === 10) setWinner("You win");
-            else setWinner("Player 2 wins");
+            if (score === 10 && playerSymbol === 1 || score === -10 && playerSymbol === 2) {
+                setWinner("You won the game.");
+                if(mode === 'multiplayer') socket.emit('game_status');
+            }
+            else
+                setWinner("You lost the game."); 
         }
         else {
             if (!is_moves_left(board)) setWinner("It's a draw");
@@ -84,11 +96,10 @@ function GameBoard({ mode }) {
             cell accordingly. Also checks for a win/draw condition.
         */
 
-        if (isJoining) return;
-
         if (board[x][y] !== 0) return; // Don't let an occupied cell change
 
-        if (mode === 'multiplayer' && turn === false) return;
+        if (mode === 'multiplayer' && turn === false) return; // No clicks allowed if it's your turn
+
         // Note: Need a new board because updating the old one doesn't work
         // react sees the reference to be the same and doesn't trigger a re-render.
         const newBoard = Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => 0));
@@ -112,7 +123,7 @@ function GameBoard({ mode }) {
     }
 
 
-    if (isGameStarted) {
+    if (isGameStarted || mode === 'ai') {
         if (winner === "None") {
             { isJoining && <h3> Joining the room... </h3> }
             return <div className='board-wrapper'>
@@ -127,7 +138,7 @@ function GameBoard({ mode }) {
         else return <Finish text={winner} mode={mode} />
     }
     else {
-        return <Waiting code = {room_code} />
+        return <Waiting code={room_code} />
     }
 }
 

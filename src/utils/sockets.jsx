@@ -38,4 +38,8 @@ async function onGameStart(socket, listener) {
     socket.on('start_game', (options) => listener(options))
 }
 
-export {joinGameRoom, connect, updateGame, onGameUpdate, onGameStart};
+async function GameStatus(socket, listener) {
+    socket.on('game_status', ({result}) => listener(result));
+}
+
+export {joinGameRoom, connect, updateGame, onGameUpdate, onGameStart, GameStatus};
