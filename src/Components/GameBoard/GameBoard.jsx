@@ -3,9 +3,13 @@ import './GameBoard.css';
 import Cell from './Cell/Cell';
 import { evaluate, is_moves_left } from '../../utils/gameUtils';
 import { findBestMove } from '../../utils/bot';
-import Finish from "../Finish/Finish";
 import { connect, GameStatus, joinGameRoom, onGameStart, onGameUpdate, updateGame } from '../../utils/sockets';
 import { useParams } from "react-router-dom";
+import PlayAgain from '../../assets/playAgain.png';
+import Quit from '../../assets/quit.png';
+import { useNavigate } from 'react-router';
+
+
 
 function GameBoard({ mode }) {
     const [isInRoom, setInRoom] = useState(false);
@@ -14,15 +18,25 @@ function GameBoard({ mode }) {
     const [socket, setSocket] = useState();
     const [playerSymbol, setSymbol] = useState(1);
     const [isGameStarted, setGameStarted] = useState(false);
-
-    const { room_code } = useParams();
+    const navigate = useNavigate();
     const [board, setBoard] = useState([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0]
     ]);
-    const [turn, setTurn] = useState(false);
+    const [turn, setTurn] = useState(true);
+
+    const { room_code } = useParams();
+
+    function clearBoard() {
+        setBoard([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ])
+    }
 
     // connect socket in case of multiplayer game
     const connectSocket = async () => {
@@ -73,6 +87,10 @@ function GameBoard({ mode }) {
     }, [])
 
     function isGameOver(board) {
+        /* 
+            Function to check whether the game has ended or not and 
+            make changes for finishing the game.
+        */
         const score = evaluate(board);
         if (score === 10 || score === -10) {
             // give player 1 player 2 win
@@ -97,7 +115,7 @@ function GameBoard({ mode }) {
 
         if (board[x][y] !== 0) return; // Don't let an occupied cell change
 
-        if (mode === 'multiplayer' && turn === false) return; // No clicks allowed if it's your turn
+        if (mode === 'multiplayer' && turn === false) return; // No clicks allowed if it's not your turn
 
         // Note: Need a new board because updating the old one doesn't work
         // react sees the reference to be the same and doesn't trigger a re-render.
@@ -107,10 +125,12 @@ function GameBoard({ mode }) {
         }
 
         if (mode === 'ai') {
+            setTurn(false);
             newBoard[x][y] = 1;
             const move = findBestMove(newBoard, 1, 2);
             console.log(move);
             newBoard[move[0]][move[1]] = 2;
+            setTurn(true);
         }
         else {
             newBoard[x][y] = playerSymbol;
@@ -136,13 +156,30 @@ function GameBoard({ mode }) {
                 })}
             </div>
         }
-        else return <Finish text={winner} mode={mode} />
+        else {
+            // Results page
+            return <div className='board-wrapper'>
+                <div className='result-text'>
+                    {winner}
+                </div>
+                <div id='play-again' onClick={() => {
+                    clearBoard();
+                    setWinner("None");
+                }}>
+                    <img src={PlayAgain} />
+                </div>
+                <div id='quit' onClick={() => navigate('/')}>
+                    <img src={Quit} />
+                </div>
+            </div>
+        }
     }
     else {
+        // Show room details if 2 players haven't joined yet.
         return <div className='board-wrapper'>
             <h1> Waiting for other player to join </h1>
 
-            <h2>Room Code </h2>
+            <h2> Room Code </h2>
             <h2> <b> {room_code} </b> </h2>
         </div>
     }
