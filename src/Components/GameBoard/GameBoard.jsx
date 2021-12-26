@@ -3,7 +3,7 @@ import './GameBoard.css';
 import Cell from './Cell/Cell';
 import { evaluate, is_moves_left } from '../../utils/gameUtils';
 import { findBestMove } from '../../utils/bot';
-import { connect, GameStatus, joinGameRoom, onGameStart, onGameUpdate, updateGame } from '../../utils/sockets';
+import { connect, GameStatus, joinGameRoom, onGameStart, onGameUpdate, updateGame, playerLeftGame } from '../../utils/sockets';
 import { useParams } from "react-router-dom";
 import PlayAgain from '../../assets/playAgain.png';
 import Quit from '../../assets/quit.png';
@@ -48,7 +48,10 @@ function GameBoard({ mode }) {
 
         // join the room
         setJoining(true);
-        const joined = await joinGameRoom(socket, room_code).catch(err => alert(err));
+        const joined = await joinGameRoom(socket, room_code).catch(err => {
+            alert(err)
+            navigate('/play');
+        });
         console.log(joined);
         if (joined) setInRoom(true);
         setJoining(false);
@@ -74,7 +77,13 @@ function GameBoard({ mode }) {
         GameStatus(socket, (result) => {
             console.log(result);
             if (result === false) setWinner("You lost the game");
-            else setWinner("You won the game");
+            else if(result === "draw") setWinner("It's a draw");
+        });
+
+        // set up disconnect event in case any of the players leave the game midway
+        playerLeftGame(socket, () => {
+            alert('The opponent has left the game');
+            setGameStarted(false);
         });
 
     }
@@ -96,13 +105,16 @@ function GameBoard({ mode }) {
             // give player 1 player 2 win
             if (score === 10 && playerSymbol === 1 || score === -10 && playerSymbol === 2) {
                 setWinner("You won the game.");
-                if (mode === 'multiplayer') socket.emit('game_status');
+                if (mode === 'multiplayer') socket.emit('game_status', {result: 'win'});
             }
             else
                 setWinner("You lost the game.");
         }
         else {
-            if (!is_moves_left(board)) setWinner("It's a draw");
+            if (!is_moves_left(board)) {
+                setWinner("It's a draw");
+                socket.emit('game_status', {result: 'draw'});
+            }
         }
     }
 
