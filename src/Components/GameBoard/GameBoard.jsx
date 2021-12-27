@@ -103,7 +103,7 @@ function GameBoard({ mode }) {
         const score = evaluate(board);
         if (score === 10 || score === -10) {
             // give player 1 player 2 win
-            if (score === 10 && playerSymbol === 1 || score === -10 && playerSymbol === 2) {
+            if ( (score === 10 && playerSymbol === 1) || (score === -10 && playerSymbol === 2)) {
                 setWinner("You won the game.");
                 if (mode === 'multiplayer') socket.emit('game_status', {result: 'win'});
             }
@@ -178,10 +178,10 @@ function GameBoard({ mode }) {
                     clearBoard();
                     setWinner("None");
                 }}>
-                    <img src={PlayAgain} />
+                    <img src={PlayAgain} alt='play again'/>
                 </div>
                 <div id='quit' onClick={() => navigate('/')}>
-                    <img src={Quit} />
+                    <img src={Quit} alt='quit game'/>
                 </div>
             </div>
         }

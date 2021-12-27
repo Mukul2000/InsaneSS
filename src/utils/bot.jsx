@@ -5,7 +5,7 @@ function minimax(board, depth, isMax, player, ai) {
     const score = evaluate(board);
 
     // If don't have to look ahead anymore, return the score.
-    if(depth == 0) return score;
+    if(depth === 0) return score;
 
 
     // If Maximizer or minimizer has won the game return his/her

@@ -9,10 +9,10 @@ function Play(props) {
     const navigate = useNavigate();
     return <div className='play-wrapper'>
         <div className='play-button' onClick={() => navigate('/play')}>
-            <img id='play-button' src={playButton} />
+            <img id='play-button' src={playButton} alt='play multiplayer' />
         </div>
         <div className='play-button' onClick={() => navigate('/play/ai')}>
-            <img id='play-button' src={AI} />
+            <img id='play-button' src={AI} alt='play AI'/>
         </div>       
     </div>
 }

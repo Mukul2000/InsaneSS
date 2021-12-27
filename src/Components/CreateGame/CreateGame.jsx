@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import './CreateGame.css';
 import { useNavigate } from "react-router-dom";
 import Create from '../../assets/create.png';
