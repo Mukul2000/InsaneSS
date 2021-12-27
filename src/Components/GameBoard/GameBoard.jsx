@@ -40,7 +40,8 @@ function GameBoard({ mode }) {
 
     // connect socket in case of multiplayer game
     const connectSocket = async () => {
-        const socket = await connect('http://localhost:8000').catch(e => {
+        
+        const socket = await connect('http://tic-tac-toe-backend-server.herokuapp.com').catch(e => {
             console.log(e);
             alert(e);
         });
