@@ -84,6 +84,7 @@ function GameBoard({ mode }) {
         playerLeftGame(socket, () => {
             alert('The opponent has left the game');
             setGameStarted(false);
+            clearBoard();
         });
 
     }
