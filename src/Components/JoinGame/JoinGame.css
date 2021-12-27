@@ -1,20 +1,25 @@
-.result-text {
-    font-size: 30px;
-    margin-bottom: 20px;
-    color: #8c5f3e;
-}
-
-.wrapper {
+.input-wrapper {
     height: 400px;
     width: 400px;
     display: flex;
     align-items: center;
     flex-flow: wrap;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     margin: auto;
     text-align: center;
     background-image: url('../../assets/gameBoard.png');
     background-size: cover;
     padding: 20px;
+}
+
+.heading {
+    color: rgb(82, 45, 45);
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.room_input {
+    font-size: x-large;
+    margin-bottom: 70px;
 }

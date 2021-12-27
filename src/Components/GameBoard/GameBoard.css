@@ -17,3 +17,15 @@
     margin: 10px;
     display: inline-block;
 }
+
+.turn-text {
+    font-size:xx-large;
+    color:rgb(99, 52, 52);
+    font-weight: bold;
+}
+
+.result-text {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #8c5f3e;
+}

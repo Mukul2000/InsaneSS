@@ -49,6 +49,7 @@ function evaluate(board) {
 }
 
 function is_moves_left(board) {
+    // checks whether the board is full or not
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (board[i][j] === 0) return true;

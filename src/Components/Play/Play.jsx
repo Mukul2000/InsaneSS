@@ -8,7 +8,7 @@ import AI from '../../assets/AI.png';
 function Play(props) {
     const navigate = useNavigate();
     return <div className='play-wrapper'>
-        <div className='play-button' onClick={() => navigate('/play/human')}>
+        <div className='play-button' onClick={() => navigate('/play')}>
             <img id='play-button' src={playButton} />
         </div>
         <div className='play-button' onClick={() => navigate('/play/ai')}>

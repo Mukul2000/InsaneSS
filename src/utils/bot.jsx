@@ -3,7 +3,11 @@ import { is_moves_left, evaluate } from './gameUtils';
 function minimax(board, depth, isMax, player, ai) {
 
     const score = evaluate(board);
+
+    // If don't have to look ahead anymore, return the score.
     if(depth == 0) return score;
+
+
     // If Maximizer or minimizer has won the game return his/her
     // evaluated score
     if (score === 10 || score === -10)
@@ -96,14 +100,5 @@ function findBestMove(board, player, ai) {
 
     return [bestRow, bestCol, bestVal];
 }
-
-// const board = [
-//     [2,2,2,0],
-//     [1,1,1,0],
-//     [0,1,0,0],
-//     [0,0,0,0]
-// ];
-
-// console.log(findBestMove(board, 1, 2));
 
 export { findBestMove };
