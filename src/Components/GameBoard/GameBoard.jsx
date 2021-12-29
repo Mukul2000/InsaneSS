@@ -31,11 +31,11 @@ function GameBoard({ mode }) {
 
     function clearBoard() {
         setBoard([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ])
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ])
     }
 
     // connect socket in case of multiplayer game
@@ -57,10 +57,10 @@ function GameBoard({ mode }) {
         setJoining(false);
 
         // set up listener for game start, when two players are in the room
-        onGameStart(socket, (options) => {
+        socket.on('start_game', (config) => {
             setGameStarted(true);
-            setSymbol(options.symbol);
-            if (options.start === true) {
+            setSymbol(config.symbol);
+            if (config.start === true) {
                 setTurn(true);
             }
             else setTurn(false);
@@ -68,20 +68,19 @@ function GameBoard({ mode }) {
 
 
         // set up listener for move updates
-        onGameUpdate(socket, (board) => {
+        socket.on('on_game_update', (board) => {
             setBoard(board);
             setTurn(true);
         });
 
         // set up listener in case a player wins
-        GameStatus(socket, (result) => {
-            console.log(result);
+        socket.on('game_status', ({ result }) => {
             if (result === false) setWinner("You lost the game");
-            else if(result === "draw") setWinner("It's a draw");
+            else if (result === "draw") setWinner("It's a draw");
         });
 
-        // set up disconnect event in case any of the players leave the game midway
-        playerLeftGame(socket, () => {
+        // set up disconnect event in case any of the players leave the game
+        socket.on('player_left', () => {
             alert('The opponent has left the game');
             setGameStarted(false);
             clearBoard();
@@ -104,9 +103,9 @@ function GameBoard({ mode }) {
         const score = evaluate(board);
         if (score === 10 || score === -10) {
             // give player 1 player 2 win
-            if ( (score === 10 && playerSymbol === 1) || (score === -10 && playerSymbol === 2)) {
+            if ((score === 10 && playerSymbol === 1) || (score === -10 && playerSymbol === 2)) {
                 setWinner("You won the game.");
-                if (mode === 'multiplayer') socket.emit('game_status', {result: 'win'});
+                if (mode === 'multiplayer') socket.emit('game_status', { result: 'win' });
             }
             else
                 setWinner("You lost the game.");
@@ -114,7 +113,7 @@ function GameBoard({ mode }) {
         else {
             if (!is_moves_left(board)) {
                 setWinner("It's a draw");
-                if(mode === 'multiplayer') socket.emit('game_status', {result: 'draw'});
+                if (mode === 'multiplayer') socket.emit('game_status', { result: 'draw' });
             }
         }
     }
@@ -178,10 +177,10 @@ function GameBoard({ mode }) {
                     clearBoard();
                     setWinner("None");
                 }}>
-                    <img src={PlayAgain} alt='play again'/>
+                    <img src={PlayAgain} alt='play again' />
                 </div>
                 <div id='quit' onClick={() => navigate('/')}>
-                    <img src={Quit} alt='quit game'/>
+                    <img src={Quit} alt='quit game' />
                 </div>
             </div>
         }

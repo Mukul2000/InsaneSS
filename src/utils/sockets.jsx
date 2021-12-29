@@ -30,20 +30,4 @@ async function updateGame(socket, board) {
     socket.emit('update_game', {board: board});
 } 
 
-async function onGameUpdate(socket, listener) {
-   socket.on('on_game_update', (board) => listener(board)); 
-}
-
-async function onGameStart(socket, listener) {
-    socket.on('start_game', (options) => listener(options))
-}
-
-async function GameStatus(socket, listener) {
-    socket.on('game_status', ({result}) => listener(result));
-}
-
-async function playerLeftGame(socket, listener) {
-    socket.on('player_left', listener);
-}
-
-export {joinGameRoom, connect, updateGame, onGameUpdate, onGameStart, GameStatus, playerLeftGame};
+export {joinGameRoom, connect, updateGame};
