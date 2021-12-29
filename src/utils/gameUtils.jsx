@@ -4,6 +4,8 @@ function evaluate(board) {
         either through a win or a draw. Player 1 wins +10, Player 2 wins - 10
         Draw is a 0;
     */
+
+    // horizontal 4 in a row
     for (let row = 0; row < 4; row++) {
         if (board[row][0] === board[row][1] && board[row][1] === board[row][2] && board[row][2] === board[row][3]) {
             if (board[row][0] === 1) return 10;
@@ -11,6 +13,7 @@ function evaluate(board) {
         }
     }
 
+    // vertical 4 in a row
     for (let col = 0; col < 4; col++) {
         if (board[0][col] === board[1][col] && board[1][col] === board[2][col] && board[2][col] === board[3][col]) {
             if (board[0][col] === 1) return 10;
@@ -44,7 +47,6 @@ function evaluate(board) {
         if (right_top === 1) return 10;
         if (right_top === 2) return -10;
     }
-
     return 0;
 }
 

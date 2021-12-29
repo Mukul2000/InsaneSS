@@ -1,11 +1,11 @@
 import { is_moves_left, evaluate } from './gameUtils';
 
-function minimax(board, depth, isMax, player, ai) {
+function minimax(board, depth, isMax, player, ai, alpha, beta) {
 
     const score = evaluate(board);
 
     // If don't have to look ahead anymore, return the score.
-    if(depth === 0) return score;
+    if (depth === 0) return score;
 
 
     // If Maximizer or minimizer has won the game return his/her
@@ -33,10 +33,17 @@ function minimax(board, depth, isMax, player, ai) {
                     // Call minimax recursively and choose
                     // the maximum value
                     best = Math.max(best,
-                        minimax(board, depth - 1, !isMax, player, ai));
+                        minimax(board, depth - 1, !isMax, player, ai, alpha, beta));
 
                     // Undo the move
                     board[i][j] = 0;
+
+                    alpha = Math.max(alpha, best);
+
+                    // Alpha Beta Pruning
+                    if (beta <= alpha)
+                        break;
+
                 }
             }
         }
@@ -58,10 +65,17 @@ function minimax(board, depth, isMax, player, ai) {
                     // Call minimax recursively and choose
                     // the minimum value
                     best = Math.min(best,
-                        minimax(board, depth - 1, !isMax, player, ai));
+                        minimax(board, depth - 1, !isMax, player, ai, alpha, beta));
 
                     // Undo the move
                     board[i][j] = 0;
+
+                    beta = Math.min(beta, best);
+
+                    // Alpha Beta Pruning
+                    if (beta <= alpha)
+                        break;
+
                 }
             }
         }
@@ -85,7 +99,7 @@ function findBestMove(board, player, ai) {
 
                 // compute evaluation function for this
                 // move.
-                let moveVal = minimax(board, 5, true, player, ai); // 10 moves ahead
+                let moveVal = minimax(board, 6, true, player, ai, -1000, 1000); // look 6 moves ahead
 
                 board[i][j] = 0;
 

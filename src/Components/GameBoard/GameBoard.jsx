@@ -114,7 +114,7 @@ function GameBoard({ mode }) {
         else {
             if (!is_moves_left(board)) {
                 setWinner("It's a draw");
-                socket.emit('game_status', {result: 'draw'});
+                if(mode === 'multiplayer') socket.emit('game_status', {result: 'draw'});
             }
         }
     }
@@ -141,7 +141,6 @@ function GameBoard({ mode }) {
             setTurn(false);
             newBoard[x][y] = 1;
             const move = findBestMove(newBoard, 1, 2);
-            console.log(move);
             newBoard[move[0]][move[1]] = 2;
             setTurn(true);
         }
