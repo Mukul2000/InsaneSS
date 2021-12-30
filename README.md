@@ -4,12 +4,13 @@
 
 Setup instructions : 
 1. Clone the repository
-2. In the root folder, run the following commands
+2. rename .env.example to .env
+3. In the root folder, run the following commands
 ```console
 npm install
 npm start
 ```
-3. Go to the backend server link and repeat commands in step 2.
+4. Go to the backend server link and repeat commands in step 3.
   Backend server - https://github.com/Mukul2000/Swords-And-Shields-backend
 
 
