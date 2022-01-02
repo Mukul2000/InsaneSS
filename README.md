@@ -4,7 +4,7 @@
 
 Setup instructions : 
 1. Clone the repository
-2. rename .env.example to .env
+2. rename .env.example to .env ( might be a hidden file )
 3. In the root folder, run the following commands
 ```console
 npm install
